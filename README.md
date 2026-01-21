@@ -37,14 +37,6 @@ Construye la aplicación para producción en la carpeta `dist`.
 npm run build
 ```
 
-### `npm run preview`
-
-Previsuali la construcción de producción localmente.
-
-```bash
-npm run preview
-```
-
 ## Estructura del Proyecto
 
 ```
