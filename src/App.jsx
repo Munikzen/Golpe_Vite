@@ -379,6 +379,7 @@ function App() {
       nextTurn();
     } else {
       dealDamageToPlayer(activePlayerId, activePlayerId);
+      reshuffleUnansweredQuestions();
       nextTurnSameQuestion();
     }
   };
@@ -540,8 +541,6 @@ function App() {
     }
   };
   const nextTurnSameQuestion = () => {
-    setIsCardFlipped(false);
-
     setShowAnswer(false);
     setIsAnimatingAnswer(false);
     setActivePlayerId(null);
@@ -552,10 +551,12 @@ function App() {
     setAvailableAbility(null);
 
     setSilencedPlayers(newlySilencedPlayers);
-
     setNewlySilencedPlayers(new Set());
-
     setPlayersWithNewAbilities(new Set());
+
+    setTimeout(() => {
+      setIsCardFlipped(false);
+    }, 600);
   };
 
   const nextTurn = () => {
@@ -604,6 +605,26 @@ function App() {
       }
     }
     return -1;
+  };
+
+  const reshuffleUnansweredQuestions = () => {
+    const unansweredQuestions = shuffledQuestions.filter((_, index) => !answeredQuestions.has(index));
+    
+    if (unansweredQuestions.length <= 1) return;
+    
+    const reshuffled = shuffleArray(unansweredQuestions);
+    
+    const newShuffled = [...shuffledQuestions];
+    let unansweredIndex = 0;
+    
+    for (let i = 0; i < newShuffled.length; i++) {
+      if (!answeredQuestions.has(i)) {
+        newShuffled[i] = reshuffled[unansweredIndex];
+        unansweredIndex++;
+      }
+    }
+    
+    setShuffledQuestions(newShuffled);
   };
 
   const renderGameContent = () => {
@@ -910,16 +931,12 @@ function App() {
 
       case 'without-questions':
         return (
-          <>
-            <ManualButton />
-            <Credits />
-            <GenericGameMode
-              screenSize={screenSize}
-              getPlayerCardDimensions={getPlayerCardDimensions}
-              getButtonDimensions={getButtonDimensions}
-              getCardDimensions={getCardDimensions}
-            />
-          </>
+          <GenericGameMode
+            screenSize={screenSize}
+            getPlayerCardDimensions={getPlayerCardDimensions}
+            getButtonDimensions={getButtonDimensions}
+            getCardDimensions={getCardDimensions}
+          />
         );
 
       default:

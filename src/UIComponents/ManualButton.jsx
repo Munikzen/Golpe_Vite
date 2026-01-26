@@ -42,8 +42,8 @@ const ManualButton = () => {
                         <p className="manual-text">
                             1. Presiona el botón antes que los demás.<br />
                             2. Selecciona el equipo que presionó primero.<br />
-                            3. Haz clic en la carta para voltearla, aquí puedes activar una habilidad,
-                            las habilidades se activan antes de responder.<br />
+                            3. Haz clic en la carta para voltearla, aquí puedes activar una habilidad,<br />
+                            <span style={{ backgroundColor: '#FFFF00', color: '#000', padding: '6px 8px', borderRadius: '4px', fontWeight: 'bold', display: 'inline-block', marginTop: '4px' }}>las habilidades se activan antes de responder.</span><br />
                             4. Elige un resultado dependiendo la respuesta.
                         </p>
                     </div>

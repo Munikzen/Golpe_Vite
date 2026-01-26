@@ -4,6 +4,8 @@ import CorrectButton from './CorrectButton';
 import WrongButton from './WrongButton';
 import ShowAnswerButton from './ShowAnswerButton';
 import PlayerCard from './PlayerCard';
+import ManualButton from './ManualButton';
+import Credits from './Credits';
 import OrangeRounded from '../img/Orange_rounded_100.png';
 import BlueRounded from '../img/Blue_rounded_100.png';
 import RedRounded from '../img/Red_rounded_100.png';
@@ -168,6 +170,15 @@ const GenericGameMode = ({ screenSize, getPlayerCardDimensions, getButtonDimensi
         return shuffled;
     }, []);
 
+    const reshuffleRemainingQuestions = useCallback(() => {
+        const remaining = shuffledQuestions.slice();
+        
+        if (remaining.length <= 1) return;
+
+        const reshuffled = shuffleArray(remaining);
+        setShuffledQuestions(reshuffled);
+    }, [shuffledQuestions, shuffleArray]);
+
     const isPlayerDead = (player) => {
         return player.hp <= 0;
     };
@@ -293,12 +304,6 @@ const GenericGameMode = ({ screenSize, getPlayerCardDimensions, getButtonDimensi
     };
 
     const nextQuestion = () => {
-        if (currentQuestionIndex < shuffledQuestions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-        } else {
-            setCurrentQuestionIndex(0);
-        }
-
         setIsCardFlipped(false);
         setShowAnswer(false);
         setIsAnimatingAnswer(false);
@@ -306,6 +311,14 @@ const GenericGameMode = ({ screenSize, getPlayerCardDimensions, getButtonDimensi
         setActivePlayerId(null);
         setShowAbilityIcon(false);
         setAvailableAbility(null);
+
+        setTimeout(() => {
+            if (currentQuestionIndex < shuffledQuestions.length - 1) {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            } else {
+                setCurrentQuestionIndex(0);
+            }
+        }, 600);
 
         setTimeout(() => {
             setDamagedPlayers(new Set());
@@ -347,6 +360,7 @@ const GenericGameMode = ({ screenSize, getPlayerCardDimensions, getButtonDimensi
         }
     }; const handleWrongAnswer = () => {
         if (activePlayerId && !isGameWon) {
+            reshuffleRemainingQuestions();
             handleDamagePlayer(activePlayerId);
         } else {
             nextQuestion();
@@ -460,6 +474,8 @@ const GenericGameMode = ({ screenSize, getPlayerCardDimensions, getButtonDimensi
 
     return (
         <div className="main-game-container">
+            <ManualButton />
+            <Credits />
             <div className="game-layout">
                 <div className="left-side">
                     <div className="card-and-ability-container">
